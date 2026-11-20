@@ -11,7 +11,8 @@ the guide, made by looking. No "defaults only" mode: every automatic step is a p
 four code blocks in `references/engine/`, the guide's files are in `references/`; every command is run from the engine folder.
 
 **Engine setup, once per project:** the engine ships as four Markdown files in `references/engine/` (`wash.md`, `regions.md`,
-`look.md`, `selftest.md`), each holding one code block. Save the four blocks, unchanged, as `wash.py`, `regions.py`, `look.py`
+`look.md`, `selftest.md`), each holding one code block. Copy the four blocks out with a command, never by retyping them (about 190 KB of code), e.g. for each NAME:
+`awk '/^```python$/{f=1;next} /^```$/{f=0} f' references/engine/NAME.md > DIR/NAME.py`, giving `wash.py`, `regions.py`, `look.py`
 and `selftest.py` in one folder of the project (for example `art/watercolour/`; if they are already there, reuse them). They
 are plain Python 3 (3.12 or newer) and need `numpy` and `opencv-python-headless`: install them as the packages' own pages say
 ([numpy](https://pypi.org/project/numpy/), [opencv-python-headless](https://pypi.org/project/opencv-python-headless/); the engine was tested with numpy 2.5.5 and opencv-python-headless 5.1.0.95). Then `python3 selftest.py` checks
