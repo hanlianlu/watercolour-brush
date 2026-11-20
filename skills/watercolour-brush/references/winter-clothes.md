@@ -6,7 +6,7 @@ hair; the names below are that file's), and the cables of a whole garment are in
 
 ## 0. Measure before choosing the water (a step, before any garment is painted)
 
-    uv run scripts/look.py speck SOURCE mask=out/under/mask-jacket.png
+    python3 look.py speck SOURCE mask=out/under/mask-jacket.png
       at tone  60: speck 15.5 %   speck / D 10.9   toned(KIND, 60, PAPER, speck=15.5)
       at tone  72: speck 14.3 %   speck / D 11.6   …
       at tone  86: speck 12.6 %   speck / D 11.9   …
@@ -88,7 +88,7 @@ inside it has no neck in it.
 
 ## 5. Which garment runs under which: by value AND by hue
 Washes multiply, so whatever lies under a garment darkens it by its own tone and pulls it to its own hue.
-`uv run scripts/look.py over UNDER UPPER [PAPER]` prints the result. The lighter garment runs under the darker one **only if**
+`python3 look.py over UNDER UPPER [PAPER]` prints the result. The lighter garment runs under the darker one **only if**
 - the lower one is near paper (its tone 92 % of the paper's or more: a white shirt), **or** the upper one is a dark (under
   tone 80, where a tenth is six levels and no hue survives); **and**
 - at mid-tone the two are not of opposite temperature. Cream (×0.89, warm) under a blue-grey scarf at 120–160 gives a dirty
@@ -194,6 +194,6 @@ that wash and garment meet with no line of paper between.
 - `masks.npz` is float32 0..1 at the source's size, and masks cover the FRAME: cut them for a body frame (`winter.py`).
   In `areas.json` the area written first wins where two overlap.
 - `look.py holes` finds paper left inside a named session, `look.py layers` shows one layer or session alone.
-- `uv run scripts/wash.py helpers [NAME …]` prints every helper's own manual. `toned()` sets `"grain"` and `"pool"` too: they
+- `python3 wash.py helpers [NAME …]` prints every helper's own manual. `toned()` sets `"grain"` and `"pool"` too: they
   are the engine's defaults, part of a wash's water. `need()` for a step written the wrong way round returns 0 and says so.
-- Your own scripts: `uv run --with numpy==2.5.5 --with opencv-python-headless==5.1.0.95 python …` (the versions the scripts pin).
+- Your own scripts: plain `python3 …` in the environment that runs the engine (numpy 2.5.5 and opencv-python-headless 5.1.0.95 are the tested versions).

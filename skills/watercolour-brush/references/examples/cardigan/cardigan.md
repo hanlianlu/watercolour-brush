@@ -1,8 +1,17 @@
+# Example: cardigan.py
+
+The drawings file of the cardigan example: a man in a cable cardigan, a new picture painted from a pale pencil-and-tint sketch (`references/worked-example.md` walks through it). It paints with the engine (`references/engine/`).
+
+Plain Python 3 (3.12 or newer); needs `numpy` and `opencv-python-headless`. It reads and writes local image files only: no network.
+
+**Setup:** copy this folder (`source.png`, `areas.json`, `sheet.png`, `portrait.png`) into the engine folder as `examples/cardigan/`, and save the code block below, exactly as it is, as `cardigan.py` inside that copy; it finds `source.png` and `areas.json` beside itself. Then, from the engine folder, run `python3 wash.py examples/cardigan/cardigan.py examples/cardigan/out`.
+
+```python
 """One figure in one file: a man in a cable cardigan, a NEW picture painted from a pale pencil-and-tint sketch. Head, neck, shirt
 and trousers go through the underdrawing, the face is finished by hand, the cardigan is painted by hand. Grid = the source's pixels (780 x 1024).
 
-    uv run scripts/wash.py references/examples/cardigan/cardigan.py references/examples/cardigan/out            # from the skill's folder: sheet, portrait, body, draft (about a minute)
-    uv run scripts/wash.py references/examples/cardigan/cardigan.py references/examples/cardigan/out portrait   # one drawing: 7 s; `draft` (the cardigan alone): 3 s
+    python3 wash.py examples/cardigan/cardigan.py examples/cardigan/out            # from the engine folder: sheet, portrait, body, draft (about a minute)
+    python3 wash.py examples/cardigan/cardigan.py examples/cardigan/out portrait   # one drawing: 7 s; `draft` (the cardigan alone): 3 s
 
 The first run builds the underdrawing (step 2 of the order of work: areas.json + source.png -> out/under/, a few seconds; it prints the
 row of starting values every area falls in). sheet.png and portrait.png beside this file are what it paints. areas.json holds the areas
@@ -12,10 +21,10 @@ trousers, knit) and shapes named by hand (figure, cardigan, paint, arm_l, arm_r,
 names, and equal names add up. The cardigan's washes and shadows are brush strokes laid in fields; its stitches and cables are put in
 AFTER the form with the "knit" and "cable" brushes, which read the values under them (SKILL.md, "Large areas are painted in strokes").
 
-    E=references/examples/cardigan
-    uv run scripts/look.py shapes $E/source.png $E/out/shapes.png mask=$E/out/under/mask-knit.png          # where the source put light and shadow
-    uv run scripts/look.py paths  $E/cardigan.py draft $E/source.png $E/out/paths.png scale=1.3 kinds=path,area
-    uv run scripts/look.py values $E/out/portrait.png areas=$E/out/under/masks.npz frame=170,52,389,389    # the checks after the first render
+    E=examples/cardigan
+    python3 look.py shapes $E/source.png $E/out/shapes.png mask=$E/out/under/mask-knit.png          # where the source put light and shadow
+    python3 look.py paths  $E/cardigan.py draft $E/source.png $E/out/paths.png scale=1.3 kinds=path,area
+    python3 look.py values $E/out/portrait.png areas=$E/out/under/masks.npz frame=170,52,389,389    # the checks after the first render
 """
 import os
 import shutil
@@ -254,3 +263,4 @@ def figure(frame, out, with_head=True):
 
 
 DRAWINGS = {"sheet": figure(SHEET, 1024), "portrait": figure(PORTRAIT, 512), "body": figure(BODY, 690), "draft": figure(BODY, 690, False)}
+```

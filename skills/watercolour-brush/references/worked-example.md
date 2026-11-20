@@ -1,10 +1,10 @@
 # Watercolour brush — the worked examples, decision by decision
 
-Read beside SKILL.md. Two pictures, each one file and one command, painted by the order of work. Between them they show
+Read beside SKILL.md (its "Engine setup" says how to save the engine and each example's code block as `.py` files). Two pictures, each one file and one command, painted by the order of work. Between them they show
 both kinds of job: a new picture from a sketch, and a finished picture painted again.
 
-    uv run scripts/wash.py references/examples/cardigan/cardigan.py references/examples/cardigan/out
-    uv run scripts/wash.py references/examples/winter/winter.py references/examples/winter/out
+    python3 wash.py examples/cardigan/cardigan.py examples/cardigan/out
+    python3 wash.py examples/winter/winter.py examples/winter/out
 
 ## `examples/cardigan/`: a new picture from a pale sketch (`cardigan.py`, `areas.json`, `source.png`, `sheet.png`, `portrait.png`)
 A man of sixty-five, half-length, in a moss-green cable cardigan over a white shirt. Start a new figure from this file.

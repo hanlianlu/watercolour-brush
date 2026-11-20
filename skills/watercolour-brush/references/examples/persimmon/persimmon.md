@@ -1,6 +1,15 @@
+# Example: persimmon.py
+
+A minimal drawings file: a persimmon on a 512 grid, every kind of mark used once. It has no data files and paints with the engine (`references/engine/`).
+
+Plain Python 3 (3.12 or newer); needs `numpy` and `opencv-python-headless`. It reads and writes local image files only: no network.
+
+**Setup:** save the code block below, exactly as it is, as `persimmon.py` in `examples/persimmon/` inside the engine folder. Then, from the engine folder, run `python3 wash.py examples/persimmon/persimmon.py out/`; it writes `out/persimmon.png`.
+
+```python
 """A minimal watercolour-brush drawings file: a persimmon on a 512 grid. Every kind of mark is used once.
 
-    uv run scripts/wash.py references/examples/persimmon/persimmon.py out/        # from the skill's folder; out/persimmon.png
+    python3 wash.py examples/persimmon/persimmon.py out/        # from the engine folder; out/persimmon.png
 """
 C, W = "c", "w"
 BODY = [(256, 150), (345, 165), (400, 250), (385, 345), (256, 385), (127, 345), (112, 250), (167, 165)]
@@ -32,3 +41,4 @@ DRAWINGS = {
         ],
     },
 }
+```

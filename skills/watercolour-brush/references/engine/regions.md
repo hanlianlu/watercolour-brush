@@ -1,17 +1,21 @@
-#!/usr/bin/env -S uv run --script
-# /// script
-# requires-python = ">=3.12"
-# dependencies = ["numpy==2.5.5", "opencv-python-headless==5.1.0.95"]
-# ///
+# Engine: regions.py
+
+Steps 1 and 2 of the order of work: `propose` cuts a source picture into regions and guesses `areas.json`; `build` makes the masks and the underdrawing from the corrected file. It imports `wash.py`.
+
+Plain Python 3 (3.12 or newer); needs `numpy` and `opencv-python-headless`. It reads and writes local image files only: no network.
+
+**Setup, once per project:** save the code block below, exactly as it is, as `regions.py` in the project's engine folder (for example `art/watercolour/`), beside the other engine files (`wash.py`, `regions.py`, `look.py` and `selftest.py`; see "Engine setup" in `SKILL.md`). They import each other, so all four stay in one folder. Run it with `python3 regions.py propose SOURCE OUT_DIR`; with no arguments it prints its manual.
+
+```python
 """Areas and underdrawing from a source picture: steps 1 and 2 of the order of work, a few seconds each.
 
-    uv run regions.py propose SOURCE OUT_DIR [k=9]
+    python3 regions.py propose SOURCE OUT_DIR [k=9]
         Cuts the source into regions by colour and place and writes OUT_DIR/regions.png: every region tinted, outlined
         and numbered, source coordinates along the border. Prints one line per region (id, a guess of what it is, its box,
         its share of the picture, its colour) and writes the guesses as OUT_DIR/areas.json, the file you correct.
         (An areas.json that is already there is kept: delete it to start again.)
 
-    uv run regions.py build SOURCE OUT_DIR/areas.json
+    python3 regions.py build SOURCE OUT_DIR/areas.json
         Your areas -> masks.npz, areas.png (read it at 1:1) and one mask-NAME.png each; the underdrawing with its
         corrections -> under.npy, underdrawing.png. Prints per area what the source measures there, the row of
         references/starting-values.md it falls in and the gains used. Correct areas.json, build again, look again.
@@ -420,3 +424,4 @@ if __name__ == "__main__":
         build(a[1], a[2])
     else:
         sys.exit(__doc__)
+```

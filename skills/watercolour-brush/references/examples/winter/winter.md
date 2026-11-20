@@ -1,8 +1,17 @@
+# Example: winter.py
+
+The drawings file of the winter example: a child in winter clothes, a finished picture in this look painted again (`references/worked-example.md` walks through it). It paints with the engine (`references/engine/`).
+
+Plain Python 3 (3.12 or newer); needs `numpy` and `opencv-python-headless`. It reads and writes local image files only: no network.
+
+**Setup:** copy this folder (`source.png`, `areas.json`, `sheet.png`, `portrait.png`) into the engine folder as `examples/winter/`, and save the code block below, exactly as it is, as `winter.py` inside that copy; it finds `source.png` and `areas.json` beside itself. Then, from the engine folder, run `python3 wash.py examples/winter/winter.py examples/winter/out`.
+
+```python
 """A child in winter clothes: a finished picture in this look painted again ("approved": true in areas.json), so it goes on the source's
 own paper, keeps its values and keeps the pale wash behind it. Grid = the source's pixels (780 x 1024).
 
-    uv run scripts/wash.py references/examples/winter/winter.py references/examples/winter/out             # from the skill's folder: sheet, portrait, body, draft (about a minute)
-    uv run scripts/wash.py references/examples/winter/winter.py references/examples/winter/out draft       # one drawing; `draft` is the clothes without the head, 3 s
+    python3 wash.py examples/winter/winter.py examples/winter/out             # from the engine folder: sheet, portrait, body, draft (about a minute)
+    python3 wash.py examples/winter/winter.py examples/winter/out draft       # one drawing; `draft` is the clothes without the head, 3 s
 
 The first run builds the underdrawing (step 2 of the order of work: areas.json + source.png -> out/under/, a few seconds). sheet.png and
 portrait.png beside this file are what it paints. areas.json holds the areas as corrected in step 1 (`regions.py propose`, then by hand),
@@ -14,12 +23,12 @@ hard-edged value steps that run with its rolls, its knit put in afterwards, unev
 meets the scarf on shared nodes; long dark hair (masses, strand bundles, lifted lights, edge strands, flyaways); a child's eyes by
 hand; the wash behind as two puddles with a scalloped edge.
 
-    E=references/examples/winter
-    uv run scripts/look.py speck $E/source.png mask=$E/out/under/mask-jacket.png                           # before anything: the jacket's water
-    uv run scripts/look.py tones $E/source.png 60 400 720 1024 step=30                                     # where it is dark, before any shape
-    uv run scripts/look.py paths $E/winter.py draft $E/source.png $E/out/paths.png scale=1.25 kinds=path,area
-    uv run scripts/look.py holes $E/winter.py draft                                                        # paper left open inside the local colours
-    uv run scripts/look.py diff  $E/out/draft.png $E/source.png frame=20,330,740,694 areas=$E/out/under/masks.npz    # steers every round
+    E=examples/winter
+    python3 look.py speck $E/source.png mask=$E/out/under/mask-jacket.png                           # before anything: the jacket's water
+    python3 look.py tones $E/source.png 60 400 720 1024 step=30                                     # where it is dark, before any shape
+    python3 look.py paths $E/winter.py draft $E/source.png $E/out/paths.png scale=1.25 kinds=path,area
+    python3 look.py holes $E/winter.py draft                                                        # paper left open inside the local colours
+    python3 look.py diff  $E/out/draft.png $E/source.png frame=20,330,740,694 areas=$E/out/under/masks.npz    # steers every round
 """
 import os
 import shutil
@@ -333,3 +342,4 @@ def figure(frame, out, with_head=True):
 
 
 DRAWINGS = {"sheet": figure(SHEET, 1024), "portrait": figure(PORTRAIT, 512), "body": figure(BODY, 740), "draft": figure(BODY, 740, False)}
+```

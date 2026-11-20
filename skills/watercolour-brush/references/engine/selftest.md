@@ -1,9 +1,13 @@
-#!/usr/bin/env -S uv run --script
-# /// script
-# requires-python = ">=3.12"
-# dependencies = ["numpy==2.5.5", "opencv-python-headless==5.1.0.95"]
-# ///
-"""The engine's promises, checked by painting (run it after changing wash.py):  uv run selftest.py"""
+# Engine: selftest.py
+
+The engine's promises, checked by painting: one assertion per promise. It imports `wash.py`, `regions.py` and `look.py`.
+
+Plain Python 3 (3.12 or newer); needs `numpy` and `opencv-python-headless`. It reads and writes local image files only: no network.
+
+**Setup, once per project:** save the code block below, exactly as it is, as `selftest.py` in the project's engine folder (for example `art/watercolour/`), beside the other engine files (`wash.py`, `regions.py`, `look.py` and `selftest.py`; see "Engine setup" in `SKILL.md`). They import each other, so all four stay in one folder. Run it with `python3 selftest.py` after changing `wash.py` or `regions.py`; it ends with `selftest ok`.
+
+```python
+"""The engine's promises, checked by painting (run it after changing wash.py):  python3 selftest.py"""
 import sys
 from pathlib import Path
 
@@ -217,3 +221,4 @@ with tempfile.TemporaryDirectory() as tmp:
     said = out.getvalue()
     assert "within 15: 100 %" in said and "speck" in said and " 96 " in said.replace("  ", " "), "look.py diff / tones / speck"
 print("selftest ok")
+```

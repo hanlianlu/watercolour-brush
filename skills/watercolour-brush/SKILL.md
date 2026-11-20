@@ -7,13 +7,23 @@ description: Paint pencil-and-wash watercolour illustrations (portraits, figures
 
 Two things, kept apart: a **brush system** (paper, pigment, water and strokes as code; deterministic) and a **painter's
 guide** (how to make a picture with it). The system does what it is told; a good picture comes from the decisions in
-the guide, made by looking. No "defaults only" mode: every automatic step is a proposal that you paint over. Scripts are
-in `scripts/`, the guide's files in `references/`; every command is run from this skill's folder.
+the guide, made by looking. No "defaults only" mode: every automatic step is a proposal that you paint over. The engine is
+four code blocks in `references/engine/`, the guide's files are in `references/`; every command is run from the engine folder.
 
-## Part 1: the brush system (`scripts/`; each file's header is its manual, printed when run without arguments)
+**Engine setup, once per project:** the engine ships as four Markdown files in `references/engine/` (`wash.md`, `regions.md`,
+`look.md`, `selftest.md`), each holding one code block. Save the four blocks, unchanged, as `wash.py`, `regions.py`, `look.py`
+and `selftest.py` in one folder of the project (for example `art/watercolour/`; if they are already there, reuse them). They
+are plain Python 3 (3.12 or newer) and need `numpy` and `opencv-python-headless`: install them as the packages' own pages say
+([numpy](https://pypi.org/project/numpy/), [opencv-python-headless](https://pypi.org/project/opencv-python-headless/); the engine was tested with numpy 2.5.5 and opencv-python-headless 5.1.0.95). Then `python3 selftest.py` checks
+the setup. **To start from an example**, copy its folder from `references/examples/NAME/` (`source.png`, `areas.json`, …) into
+the engine folder as `examples/NAME/` and save its code block (`references/examples/NAME/NAME.md`) as `NAME.py` inside that
+copy: the example finds its data beside itself (`persimmon` has no data: just its block, as `examples/persimmon/persimmon.py`).
+Every command below is run from the engine folder, e.g. `python3 wash.py examples/cardigan/cardigan.py examples/cardigan/out`.
+
+## Part 1: the brush system (`references/engine/`; each file's docstring is its manual, printed when run without arguments)
 
 - `wash.py` — the engine. A picture is a sheet of cold-press paper and a list of layers.
-  `uv run scripts/wash.py DRAWINGS.py OUT_DIR [name …]`; painted at 2x and reduced; any size to 2K.
+  `python3 wash.py DRAWINGS.py OUT_DIR [name …]`; painted at 2x and reduced; any size to 2K.
   - **Paint**: transparent washes that multiply (lights are paper kept dry with `"out"` or taken off with `"lift"`); hard
     edges with a rim, wet stretches (`"w"` nodes), `"soft"`, `"bleed"`; `"grade"`, a wet gradient inside one shape; dry
     brush, `"feather"` strokes; graphite. **`"brush"`: a wet session of loaded brush strokes**, the unit of every large
@@ -24,7 +34,7 @@ in `scripts/`, the guide's files in `references/`; every command is run from thi
   - **Water** (off unless asked for; "Watercolour character" says where and how much): `"miss"`, `"ragged"`, `"dry"`,
     `"settle"`, `"sediment"`, `"broken"`, the layers `"bloom"` and `"sparkle"`, a layer's own `"seed"`. **From an
     underdrawing** (`"under"`, `"masks"`): `study` (washes, big and pale to small and dark), `hatch`, `trace`.
-  - **Helpers** (`from wash import …`; `uv run scripts/wash.py helpers` prints every argument). A garment's values:
+  - **Helpers** (`from wash import …`; `python3 wash.py helpers` prints every argument). A garment's values:
     `ladder` (its glazes from the source's colours), `need` (the alpha from one measured tone to the next), `toned` (a
     wash's water at the tone it arrives at, by the speck MEASURED on the source), `step_to` (both). Strokes:
     `strokes_along` (a field between two guide lines, or a shape you drew, filled with strokes that follow the form),
@@ -62,7 +72,7 @@ in `scripts/`, the guide's files in `references/`; every command is run from thi
 ## Part 2: the painter's guide
 
 Read `style.md` first (the look, measured). Start a picture from one of the two worked examples, each one file and one
-command: `examples/cardigan/cardigan.py` (a NEW picture from a pale sketch: head and face, grey hair, a cable cardigan
+command (set up as in "Engine setup"): `examples/cardigan/cardigan.py` (a NEW picture from a pale sketch: head and face, grey hair, a cable cardigan
 over a light shirt, plain paper behind) or `examples/winter/winter.py` (a finished picture painted AGAIN: a child, long
 dark hair, a dark padded jacket, a scarf, a cable sweater, its own wash behind). `worked-example.md` walks through both;
 `dark-cloth.md` and `winter-clothes.md` hold the garments' rules.
@@ -70,7 +80,7 @@ dark hair, a dark padded jacket, a scarf, a cable sweater, its own wash behind).
 ### What it can and cannot do
 It repaints **surface, not manner**: paper, depth, wash edges, pencil. Identity, proportions and the way a face is
 drawn come from the source; a cartoon stays a cartoon. The guide is written for people; small things take the same
-marks (`references/examples/persimmon/persimmon.py`). It **cannot invent a face**: start from a drawing of this very person that already has
+marks (`references/examples/persimmon/persimmon.md`). It **cannot invent a face**: start from a drawing of this very person that already has
 the charm; if it is not "what a lovely person" at a glance, stop. A code-made picture is told at 1:1 by its LARGE
 GARMENTS first, then by ground and hair: that is where the looking and the hand work go.
 

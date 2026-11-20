@@ -1,87 +1,91 @@
-#!/usr/bin/env -S uv run --script
-# /// script
-# requires-python = ">=3.12"
-# dependencies = ["numpy==2.5.5", "opencv-python-headless==5.1.0.95"]
-# ///
+# Engine: look.py
+
+The painter's eyes: reads a source exactly and checks your own marks against it (`grid`, `tones`, `values`, `speck`, `diff`, `paths`, `layers`, `holes`, and more). Nothing in it paints. It imports `wash.py`.
+
+Plain Python 3 (3.12 or newer); needs `numpy` and `opencv-python-headless`. It reads and writes local image files only: no network.
+
+**Setup, once per project:** save the code block below, exactly as it is, as `look.py` in the project's engine folder (for example `art/watercolour/`), beside the other engine files (`wash.py`, `regions.py`, `look.py` and `selftest.py`; see "Engine setup" in `SKILL.md`). They import each other, so all four stay in one folder. Run it with `python3 look.py grid SRC OUT.png x0 y0 x1 y1`; with no arguments it prints its manual.
+
+```python
 """The painter's eyes: read a source exactly, and check your own marks against it. Nothing here paints.
 
-    uv run look.py grid   SRC OUT.png x0 y0 x1 y1 [scale=2] [step=20]
+    python3 look.py grid   SRC OUT.png x0 y0 x1 y1 [scale=2] [step=20]
         A zoom of a region of the source with a coordinate grid (source pixels). Read node positions off it.
 
-    uv run look.py shapes SRC OUT.png mask=MASK.png [x0 y0 x1 y1] [scale=1.5] [blur=1.5,7]
+    python3 look.py shapes SRC OUT.png mask=MASK.png [x0 y0 x1 y1] [scale=1.5] [blur=1.5,7]
         Where the source put its light and shadow in one area (a garment's mask-NAME.png from `regions.py build`): the area
         in four flat values (light, half-tone, shadow, dark; the darkest eighth, then steps at 35 and 65 %), with the grid,
         at two scales side by side: nearly as painted (a light along an edge, a cast shadow and every hard edge survive)
         and blurred to the big shapes (where each shadow starts, swells and ends; which side of an overlap is the dark one).
         It is for LOOKING: the shadow shapes you then draw by hand, as nodes read off `grid`; never trace these blobs.
 
-    uv run look.py paths  DRAWINGS.py NAME SRC OUT.png [x0 y0 x1 y1] [scale=2] [layers=12-30] [kinds=path,stroke,pencil,lift,area,brush]
+    python3 look.py paths  DRAWINGS.py NAME SRC OUT.png [x0 y0 x1 y1] [scale=2] [layers=12-30] [kinds=path,stroke,pencil,lift,area,brush]
         Your marks drawn over the source (the drawing's grid must be the source's pixels; default region: the frame).
         Washes blue, reserved areas white, lifts yellow, strokes orange, pencil magenta, the strokes of a "brush" layer green
         (both sides, a dot where the brush was set down); each carries its layer number.
         Round dot: plain node, square: corner, ring: wet node. A feather stroke shows ticks on the side it dies away to.
 
-    uv run look.py values IMG [IMG ...] [box=x0,y0,x1,y1] [mask=MASK.png] [areas=masks.npz [frame=x0,y0,w,h]] | at=x,y/x,y/...
+    python3 look.py values IMG [IMG ...] [box=x0,y0,x1,y1] [mask=MASK.png] [areas=masks.npz [frame=x0,y0,w,h]] | at=x,y/x,y/...
         How dark and what colour: luminance at the darkest 1 / 5 / 25 / 50 / 75 / 95 %, the mean colour and how strong that
         colour is (chroma), per image; with areas= (the masks of `regions.py build`) one line per area: the measurement
         that picks the row in references/starting-values.md. The pictures are then on the source's grid, or, with frame=,
         are that frame of it (a portrait). With at=, the colour and luminance at those points (pick wash colours so).
 
-    uv run look.py tones  IMG [x0 y0 x1 y1] [step=24] [blur=5]
+    python3 look.py tones  IMG [x0 y0 x1 y1] [step=24] [blur=5]
         The picture read in ROWS OF TONES: blurred luminance on a grid, source coordinates along the top and the side. Where a
         garment is dark, where it stays light, where a channel of quilting turns: read this before any shadow shape is drawn
         (by eye, on a zoomed grid, a fold lands 30 px out).
 
-    uv run look.py diff   PAINTED SOURCE [x0 y0 x1 y1] [step=40] [blur=6] [frame=x0,y0,w,h] [areas=masks.npz] [mask=MASK.png]
+    python3 look.py diff   PAINTED SOURCE [x0 y0 x1 y1] [step=40] [blur=6] [frame=x0,y0,w,h] [areas=masks.npz] [mask=MASK.png]
         Your render against the source, cell by cell: painted minus source (blurred luminance; "." within 8; minus: yours is
         too dark there), and per area the share of points (every 20 px) within 15 and within 25 and the mean difference.
         PAINTED is on the source's grid, or is frame= of it (a body frame, a draft). This table steers a garment's rounds: a
         column of +20 is a dark you left out, a patch of -30 a shape drawn too big. It says nothing about how the paint looks.
 
-    uv run look.py speck  IMG [IMG ...] mask=MASK.png | box=x0,y0,x1,y1 [paper=#HEX] [win=24]
+    python3 look.py speck  IMG [IMG ...] mask=MASK.png | box=x0,y0,x1,y1 [paper=#HEX] [win=24]
         How much of the paper a wash shows, measured BEFORE choosing its water: speck (fine std of luminance / mean, per cent)
         on the area's flat patches (the calmest third of its windows, so folds and edges do not count), at three tones, with the
         line to paste: toned(KIND, tone, PAPER, speck=…). Speck / D says what kind of cloth it is: 2.5-4 a smooth coat (the
         water toned down as the value falls), 6-7 a fabric that shows the paper at every value (a padded jacket, a soft
         scarf: the engine's water left as it is). Run it on your render too: within 1.5 points of the source's.
 
-    uv run look.py layers DRAWINGS.py NAME OUT.png only=12,14-16 | only=wash,half | upto=15
+    python3 look.py layers DRAWINGS.py NAME OUT.png only=12,14-16 | only=wash,half | upto=15
         One layer or one session ALONE, or the picture as it stood after layer 15: the others are worked out for their names
         (so "clip" and "out" hold) and lay no paint. only= takes layer numbers (as `paths` prints them) and names. Look at
         every local colour alone before anything goes over it. (A "knit", a "cable" or a "study" alone sees bare paper.)
 
-    uv run look.py holes  DRAWINGS.py NAME [OUT.png] [layers=12,wash] [least=30]
+    python3 look.py holes  DRAWINGS.py NAME [OUT.png] [layers=12,wash] [least=30]
         Paper left open inside a session of strokes: for every NAMED "brush" session (or the layers given) the share of its
         kept area ("clip" minus "out") that no stroke covered, and each hole of `least` grid units² or more with its middle
         and size. A hole that runs off the frame or is most of an open hem is marked "open": the others are white lenses,
         closed with one more stroke by hand. OUT.png: the render with the holes in red.
 
-    uv run look.py frame  PORTRAIT SHEET_OR_SOURCE
+    python3 look.py frame  PORTRAIT SHEET_OR_SOURCE
         Where a finished portrait was cut from its sheet: the frame (x0, y0, size, on the sheet's grid) that matches it best,
         and how well (r over 0.9: found). A finished picture painted again takes this frame.
 
-    uv run look.py ladder SRC lit=x,y shadow=x,y [dark=x,y] [paper=SHEET_PAPER]   or   look.py ladder LIT SHADOW [DARK] [on=SOURCE_PAPER] [paper=…]
+    python3 look.py ladder SRC lit=x,y shadow=x,y [dark=x,y] [paper=SHEET_PAPER]   or   look.py ladder LIT SHADOW [DARK] [on=SOURCE_PAPER] [paper=…]
         A garment's palette from the source's own colours: its local colour where the light falls, and the glazes (TURN,
         SHADE, DEEP, DARK, RIB) that take it to the source's shadow and to its deepest dark. Prints the line to paste into a
         drawings file (`wash.ladder` gives the same there). Never copy another garment's glazes: they carry its hue.
         paper=: the sheet's own paper when it is not the engine's (a finished picture painted again on its paper).
 
-    uv run look.py glaze  FROM TO [PAPER]
+    python3 look.py glaze  FROM TO [PAPER]
         Washes multiply. Prints the wash colour that, laid at alpha 1 over paint that now reads FROM, makes it read TO
         (paper x TO / FROM), e.g. glaze "#98A281" "#44513E".
 
-    uv run look.py over   UNDER UPPER [PAPER]
+    python3 look.py over   UNDER UPPER [PAPER]
         May the lighter garment run under the darker one? Washes multiply: prints what UPPER comes out as with UNDER beneath it
         (paper x UNDER / paper x UPPER / paper), how many levels darker and how far off its hue that is, and the answer: under
         (the lower one is near paper, or the upper one is a dark and the hue holds) or shared nodes (references/winter-clothes.md 5).
 
-    uv run look.py texture IMG [IMG ...] [box=x0,y0,x1,y1]
+    python3 look.py texture IMG [IMG ...] [box=x0,y0,x1,y1]
         The measures of style.md that are not values: detail (mean |Laplacian| of luminance after a 1 px and a 3 px
         blur; 512 portraits in this look read 2.1 / 0.45 for sleek hair and plain cloth to 4.3 / 0.65 for curls and knits:
         compare like with like) and the paper's tooth on bare paper (fine std of luminance in the box, default the top
         left corner; the look: 1.2-1.8). A garment's speck: `look.py speck`.
 
-    uv run look.py setin  DRAWINGS.py NAME AREA[,AREA] PAINTED.png ACCEPTED.png OUT.png [soft=1.2]
+    python3 look.py setin  DRAWINGS.py NAME AREA[,AREA] PAINTED.png ACCEPTED.png OUT.png [soft=1.2]
         Keep accepted parts: inside the named area(s) of the drawing (reserved shapes or "masks", the same ones that kept
         the paint off) the accepted picture is laid over the painted one with a soft edge. Both pictures in the same frame.
 """
@@ -520,3 +524,4 @@ if __name__ == "__main__":
         print("#%02X%02X%02X" % tuple(int(v) for v in np.clip(paper * b / np.maximum(a, 1), 0, 255)))
     if cmd in ("grid", "shapes", "paths", "setin"):
         print("wrote", pos[3] if cmd == "paths" else pos[5] if cmd == "setin" else pos[1])
+```

@@ -1,8 +1,12 @@
-#!/usr/bin/env -S uv run --script
-# /// script
-# requires-python = ">=3.12"
-# dependencies = ["numpy==2.5.5", "opencv-python-headless==5.1.0.95"]
-# ///
+# Engine: wash.py
+
+The painting engine: paper, washes, brush sessions, knit, graphite and water effects. A picture is a sheet of cold-press paper and a stack of layers.
+
+Plain Python 3 (3.12 or newer); needs `numpy` and `opencv-python-headless`. It reads and writes local image files only: no network.
+
+**Setup, once per project:** save the code block below, exactly as it is, as `wash.py` in the project's engine folder (for example `art/watercolour/`), beside the other engine files (`wash.py`, `regions.py`, `look.py` and `selftest.py`; see "Engine setup" in `SKILL.md`). They import each other, so all four stay in one folder. Run it with `python3 wash.py DRAWINGS.py OUT_DIR`; with no arguments it prints its manual (the drawing format and every layer key).
+
+```python
 """Watercolour brush: pencil-and-wash picture-book illustration, painted from pen paths.
 
 A picture is a sheet of cold-press paper and a stack of layers. Paint is transparent: every wash multiplies the light
@@ -174,7 +178,7 @@ How the paint behaves (what the options above do not say):
     loops unless the node there is a corner ("c").
   - In a drawings file: `from wash import flow, resample, nodes_of, runs, ribs, ring, arc, ladder, need, toned, step_to, beside,
     scallop, strokes_along, hem`: the curve through nodes, even steps along it, the nodes of a mask (to rough a SILHOUETTE; never a shadow
-    shape: those are drawn by hand); marks a painter repeats (`uv run wash.py helpers [NAME …]` prints what every argument means):
+    shape: those are drawn by hand); marks a painter repeats (`python3 wash.py helpers [NAME …]` prints what every argument means):
     runs(a, b, pitch, seed, lo, hi, skip, jit) the ribs of a knit between two guide lines; ribs(mid, width, gap, seed, lean,
     skip, jit) ribbing across a band; ring(c, r, n, squash) a button; arc(c, rx, ry, a0, a1, n) part of an oval;
     beside(nodes, d) a line moved sideways (a stitch line, a rim's inner line); scallop(nodes, lobe, depth, seed) the outline
@@ -189,10 +193,10 @@ How the paint behaves (what the options above do not say):
     and lay no paint, which is what `look.py layers` does); or step by step: `Sheet(frame, out, ...)`, `.pin(under,
     masks)`, `.paint(layer)` for each layer, `.finish()`.
 
-    uv run wash.py DRAWINGS.py OUT_DIR [name ...]       # paints DRAWINGS.py's DRAWINGS dict to OUT_DIR/<name>.png
-    uv run wash.py nodes MASK.png [scale] [eps]         # prints pen nodes for the white shape(s) in a mask: a starting point
+    python3 wash.py DRAWINGS.py OUT_DIR [name ...]       # paints DRAWINGS.py's DRAWINGS dict to OUT_DIR/<name>.png
+    python3 wash.py nodes MASK.png [scale] [eps]         # prints pen nodes for the white shape(s) in a mask: a starting point
                                                         # (eps: how far, in mask px, the path may cut a bend; smooth the mask first)
-    uv run wash.py helpers [NAME ...]                   # the helpers' own manuals: every argument of strokes_along, hem, ribs, toned, …
+    python3 wash.py helpers [NAME ...]                   # the helpers' own manuals: every argument of strokes_along, hem, ribs, toned, …
 """
 import importlib.util
 import sys
@@ -1449,3 +1453,4 @@ if __name__ == "__main__":
             print("painted", dst / f"{name}.png")
     else:
         sys.exit(__doc__)
+```

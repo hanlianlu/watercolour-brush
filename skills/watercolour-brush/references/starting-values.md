@@ -6,7 +6,7 @@ measurement of *this* source, and checked by a measurement of the first render.
 
 ## 1. Measure the source
 
-    uv run scripts/look.py values SOURCE areas=under/masks.npz      # per area: darkest 1 / 5 %, median, mean colour, chroma
+    python3 look.py values SOURCE areas=under/masks.npz      # per area: darkest 1 / 5 %, median, mean colour, chroma
 
 `regions.py build` prints the same lines, picks the row below for every area, and prints what the underdrawing then
 measures next to what to aim for. (`masks.npz`: float32, 0..1, the source's size; they cover the drawing's FRAME.) Put `"gain": [gain, colour, curve, warm]` on an area in `areas.json` to overrule it.
@@ -63,9 +63,9 @@ lash line, and a garment one step deeper than a pale source.
 
 ## 4. After the first render (do not skip: one line here saves three renders)
 
-    uv run scripts/look.py values SHEET SOURCE areas=under/masks.npz                     # pictures on the source's grid
-    uv run scripts/look.py values PORTRAIT areas=under/masks.npz frame=220,84,600,600    # a frame of it
-    uv run scripts/look.py texture PORTRAIT APPROVED.jpg
+    python3 look.py values SHEET SOURCE areas=under/masks.npz                     # pictures on the source's grid
+    python3 look.py values PORTRAIT areas=under/masks.npz frame=220,84,600,600    # a frame of it
+    python3 look.py texture PORTRAIT APPROVED.jpg
 
 - Darkest 1 % of the whole 512 portrait under 25: something is over-pushed. On a light subject it is the hair or
   the garment; on a dark one the garment's core glazes. Never answer by lightening skin.
