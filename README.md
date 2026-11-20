@@ -24,7 +24,7 @@ Paint them yourself, from `skills/watercolour-brush/`:
 ```bash
 uv run scripts/wash.py references/examples/cardigan/cardigan.py references/examples/cardigan/out
 uv run scripts/wash.py references/examples/winter/winter.py references/examples/winter/out
-uv run scripts/wash.py references/example_drawings.py out/          # a small persimmon, every kind of mark once
+uv run scripts/wash.py references/examples/persimmon/persimmon.py out/         # a small persimmon, every kind of mark once
 uv run scripts/selftest.py
 ```
 
@@ -53,7 +53,7 @@ skills/watercolour-brush/
   references/style.md          the measured style rules (values, edges, faces, hair, ground)
   references/*.md              starting values, dark cloth, winter clothes, the worked examples
   references/examples/         the two examples above, runnable
-  references/example_drawings.py   a minimal drawings file
+  references/examples/persimmon/   a minimal drawings file
 ```
 
 ## What it runs

@@ -1,6 +1,6 @@
 """A minimal watercolour-brush drawings file: a persimmon on a 512 grid. Every kind of mark is used once.
 
-    uv run scripts/wash.py references/example_drawings.py out/        # from the skill's folder; out/persimmon.png
+    uv run scripts/wash.py references/examples/persimmon/persimmon.py out/        # from the skill's folder; out/persimmon.png
 """
 C, W = "c", "w"
 BODY = [(256, 150), (345, 165), (400, 250), (385, 345), (256, 385), (127, 345), (112, 250), (167, 165)]

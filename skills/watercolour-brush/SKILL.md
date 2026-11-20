@@ -70,7 +70,7 @@ dark hair, a dark padded jacket, a scarf, a cable sweater, its own wash behind).
 ### What it can and cannot do
 It repaints **surface, not manner**: paper, depth, wash edges, pencil. Identity, proportions and the way a face is
 drawn come from the source; a cartoon stays a cartoon. The guide is written for people; small things take the same
-marks (`example_drawings.py`). It **cannot invent a face**: start from a drawing of this very person that already has
+marks (`references/examples/persimmon/persimmon.py`). It **cannot invent a face**: start from a drawing of this very person that already has
 the charm; if it is not "what a lovely person" at a glance, stop. A code-made picture is told at 1:1 by its LARGE
 GARMENTS first, then by ground and hair: that is where the looking and the hand work go.
 
