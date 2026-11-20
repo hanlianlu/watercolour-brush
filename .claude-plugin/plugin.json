@@ -1,0 +1,24 @@
+{
+  "name": "watercolour-brush",
+  "version": "0.1.0",
+  "description": "Paint watercolour picture-book illustrations (portraits, characters, spot art) as code: cold-press paper, transparent glazes, wet and hard edges, granulation, dry brush, lifted lights and broken pencil lines. Deterministic, no image model.",
+  "author": {
+    "name": "hanlianlu",
+    "url": "https://github.com/hanlianlu"
+  },
+  "homepage": "https://github.com/hanlianlu/watercolour-brush",
+  "repository": "https://github.com/hanlianlu/watercolour-brush",
+  "license": "MIT",
+  "keywords": [
+    "illustration",
+    "art",
+    "watercolour",
+    "watercolor",
+    "portrait",
+    "picture-book",
+    "skill"
+  ],
+  "displayName": "Watercolour Brush",
+  "icon": "./docs/icon.png",
+  "documentationUrl": "https://github.com/hanlianlu/watercolour-brush#readme"
+}

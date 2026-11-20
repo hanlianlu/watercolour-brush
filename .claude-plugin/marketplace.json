@@ -1,0 +1,15 @@
+{
+  "name": "watercolour-brush",
+  "description": "Pencil-and-wash watercolour illustration for Claude, painted as code.",
+  "owner": {
+    "name": "hanlianlu",
+    "url": "https://github.com/hanlianlu"
+  },
+  "plugins": [
+    {
+      "name": "watercolour-brush",
+      "source": "./",
+      "description": "Watercolour picture-book illustration painted as code: paper, glazes, wet edges, dry brush, pencil."
+    }
+  ]
+}
